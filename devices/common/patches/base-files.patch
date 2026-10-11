@@ -1,17 +1,64 @@
+--- a/package/base-files/files/etc/rc.common
++++ b/package/base-files/files/etc/rc.common
+@@ -186,5 +186,16 @@ extra_command "enabled" "Check if service is started on boot"
+ 
+ ALL_COMMANDS="${ALL_COMMANDS} ${EXTRA_COMMANDS}"
+ ALL_HELP="${ALL_HELP}${EXTRA_HELP}"
++
++[ -z "$IPKG_INSTROOT" ] && [ -z "$USE_PROCD" ] && [ -r /proc/self/comm ] && {
++	case "$action" in
++		start|stop|restart|boot|reload)
++			read -r _c < /proc/self/comm
++			[ "$_c" != "sh" ] && exec /bin/sh "$0" "$initscript" "$action" "$@"
++			unset _c
++			;;
++	esac
++}
++
+ list_contains ALL_COMMANDS "$action" || action=help
+ $action "$@"
+
+--- a/package/base-files/files/lib/upgrade/fwtool.sh
++++ b/package/base-files/files/lib/upgrade/fwtool.sh
+@@ -84,7 +84,7 @@ fwtool_check_image() {
+ 			# Step 3.
+ 			# here we must check if $dev == $oem to use this native compatability check
+ 			# so we add the check for [ "$dev" = "$oem" ]
+-			if (([ "${devicecompat#.*}" != "${imagecompat#.*}" ] || [ "$dev" = "$oem" ])) && [ "$SAVE_CONFIG" = "1" ]; then
++			if { [ "${devicecompat#.*}" != "${imagecompat#.*}" ] || [ -n "$oem" -a "$dev" = "$oem" ]; } && [ "$SAVE_CONFIG" = "1" ]; then
+ 				# Step 4.
+ 				# here we have to gaurd against the default case, oem may exsist and default will pass 
+ 				# the original check [ "${devicecompat#.*}" != "${imagecompat#.*}" ] so we must
+
 --- a/package/base-files/files/lib/functions.sh
 +++ b/package/base-files/files/lib/functions.sh
-@@ -395,10 +395,13 @@ default_postinst() {
+@@ -390,6 +390,11 @@ default_postinst() {
+ 		fi
+ 
+ 		rm -f /tmp/luci-indexcache.*
++
++		if grep -qs '^/usr/share/rpcd/acl.d/' "$filelist"; then
++			[ -x /etc/init.d/rpcd ] && /etc/init.d/rpcd reload
++		fi
++
+ 	fi
+ 
+ 	if [ -f "$root/usr/lib/opkg/info/${pkgname}.postinst-pkg" ]; then
+@@ -404,11 +409,16 @@ default_postinst() {
+ 		else
  			if [ "$PKG_UPGRADE" != "1" ]; then
  				"$i" enable
++				"$i" start
++			elif "$i" enabled; then
++				"$i" start
  			fi
 -			"$i" start
-+			if "$i" enabled; then
-+				"$i" start
-+			fi
  		fi
  	done
  
-+	[ -x /etc/init.d/ucitrack ] && /etc/init.d/ucitrack reload
++	if grep -qs '^/usr/share/ucitrack/' "$filelist"; then
++		[ -x /etc/init.d/ucitrack ] && /etc/init.d/ucitrack reload
++	fi
  	return $ret
  }
  
