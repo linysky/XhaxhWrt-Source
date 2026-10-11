@@ -19,6 +19,10 @@ env:
   TZ: Asia/Shanghai
   TARGET: x86_64
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,7 +47,7 @@ jobs:
         echo "FREE_UP_DISK=${FREE_UP_DISK}" >> $GITHUB_ENV
         echo "UPLOAD_BIN_DIR_FOR_ARTIFACT=${UPLOAD_BIN_DIR_FOR_ARTIFACT}" >> $GITHUB_ENV
         echo "UPLOAD_FIRMWARE_FOR_ARTIFACT=true" >> $GITHUB_ENV
-        echo "UPLOAD_FIRMWARE_FOR_RELEASE=false" >> $GITHUB_ENV
+        echo "UPLOAD_FIRMWARE_FOR_RELEASE=true" >> $GITHUB_ENV
         echo "UPLOAD_FIRMWARE_TO_COWTRANSFER=false" >> $GITHUB_ENV
         echo "UPLOAD_FIRMWARE_TO_WETRANSFER=false" >> $GITHUB_ENV
         # 注入空 token 避免 diy.sh 报错（无 kiddin9 权限时跳过 op-packages 等待）
@@ -196,6 +200,19 @@ jobs:
         name: XhaxhWrt_${{ env.VERSION }}_x86_64
         path: |
           openwrt/bin/targets/
+
+    - name: Upload firmware for release
+      if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
+      continue-on-error: true
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        shopt -s extglob
+        cd openwrt/bin/targets/*/*/
+        TAG="fw-$(date +%Y%m%d-%H%M)-${{ env.VERSION }}"
+        gh release create "$TAG" ./*.img.gz --repo "$GITHUB_REPOSITORY" \
+          --title "XhaxhWrt ${{ env.date2 }} x86_64" \
+          --notes "自动构建固件：combined-efi.img.gz（dd 全盘镜像）、sysupgrade.img.gz（LuCI 备份/升级页上传，点击升级）"
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
