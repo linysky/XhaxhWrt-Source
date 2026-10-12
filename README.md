@@ -1,100 +1,45 @@
-# XhaxhWrt-Source
+# XhaxhWrt-Source @ immortal-25.12
 
-> XhaxhWrt 源码编译固件，基于 [kiddin9/Kwrt](https://github.com/kiddin9/Kwrt)，x86_64 平台定制。
+Xhaxhwrt 自建固件线（B 线）——**ImmortalWrt 25.12 APK / ImageBuilder** 底座。
 
-## 这是什么
+与 `25.12` 分支（Kwrt 源码编译线，已封存）的区别：本分支用官方 ImmortalWrt
+ImageBuilder Docker 镜像构建，**分钟级出货、无源码编译**；包管理为 apk。
 
-从 OpenWrt 源码完整编译的自定义固件，适配 iKOOLCORE R2 Max 等 x86 软路由设备。
+## 快速构建
 
-与 [XhaxhWrt-Builder](https://github.com/linooy/XhaxhWrt-Builder)（ImageBuilder 快速构建）的区别：
+Actions → `Build Xhaxhwrt x86-64 (ImmortalWrt 25.12 APK)` → Run workflow：
 
-| | XhaxhWrt-Source（本仓库） | XhaxhWrt-Builder |
+| 输入 | 默认 | 说明 |
 |---|---|---|
-| 方式 | 源码编译 (make) | ImageBuilder 拼包 |
-| 时间 | 2-3 小时 | 几分钟 |
-| 灵活度 | 可改内核/驱动/patches | 只能选预编译包 |
-| 基于 | Kwrt (kiddin9) | ImmortalWrt |
-| 适合 | 深度定制、新驱动 | 快速出包、日常升级 |
+| luci_version | 25.12.2 | ImmortalWrt 版本（25.12.0 有口碑坑） |
+| custom_router_ip | **10.0.0.1** | 与现网一致，切过来即用 |
+| profile | 6G | overlay 大小 |
+| include_docker | yes | Docker 全家 |
 
-## 包含的软件
+出货：Release `autobuild-x86-64-imm`，附 `squashfs-combined-efi.img.gz` + sha256。
 
-**代理 / VPN**
-- passwall2 + xray-core + sing-box
-- Shadowsocks / ShadowsocksR 全家桶
-- WireGuard VPN
+## 目录
 
-**容器**
-- Docker + Docker Compose + Dockerman
-
-**证书 / DNS**
-- ACME (Let's Encrypt)
-- DDNS (Cloudflare / DNSPod)
-
-**监控**
-- collectd 全套 + Statistics
-- NUT (UPS 管理)
-- nlbwmon (带宽监控)
-
-**系统工具**
-- appfilter (应用过滤)
-- diskman / turboacc / webadmin
-- smartmontools / lm-sensors / tcpdump / iperf3
-
-**存储**
-- btrfs / exfat / ntfs3 / f2fs / automount
-
-## 品牌
-
-- 发行版名：**Xhaxhwrt**
-- 制造商：**power by xlin**
-
-## 使用方法
-
-### 构建固件
-
-1. Fork 本仓库
-2. 进入 Actions → `Build XhaxhWrt` → Run workflow
-3. 等待编译完成（约 2-3 小时）
-4. 在 Artifacts 下载固件
-
-### 升级路由器
-
-```bash
-# 上传固件到路由器
-scp XhaxhWrt-*-x86-64-generic-squashfs-combined.img.gz root@10.0.0.1:/tmp/
-
-# SSH 到路由器
-ssh root@10.0.0.1
-
-# 解压
-gunzip /tmp/XhaxhWrt-*.img.gz
-
-# 保留配置升级（推荐）
-sysupgrade -k /tmp/XhaxhWrt-*.img
+```
+.github/workflows/build-x86-64-25.12.yml   构建工作流
+x86-64/build25.sh                          ImageBuilder 构建脚本
+shell/apk-custom-packages.sh               包清单（对齐路由器 566 包基线）★
+shell/apk-prepare-packages.sh              第三方 .apk 收集
+files/                                     铺进固件的覆盖文件（去品牌 + 网络兜底）
+reference/                                 参考基线（wukongdaily/ImmortalWrt-ImageBuilder）
 ```
 
-### 首次刷入（全新安装）
+## 包清单
 
-```bash
-# 写入 TF 卡 / USB
-dd if=XhaxhWrt-*.img of=/dev/sdX bs=1M oflag=direct
-```
+`shell/apk-custom-packages.sh` 是唯一事实源，按路由器现网 566 包功能闭包对齐
+（passwall2/xray-core 第三方 feed，Docker/监控/NUT/ACME 官方 feed）。
+标注 `# [验证]` 的包名首构建时核验存在性。
 
-## 配置说明
+## 去品牌
 
-- `devices/common/.config` — 基础包配置（dnsmasq-full、Docker 内核支持等）
-- `devices/x86_64/.config` — x86_64 定制包（passwall2、docker、acme 等）
-- `devices/common/diy.sh` — 公共编译脚本（feeds、patches）
-- `devices/x86_64/diy.sh` — x86 硬件驱动 + 品牌定制
+files/ 直接覆盖 `etc/os-release`、`usr/lib/os-release`、`etc/openwrt_release`、
+`etc/banner`，品牌 Xhaxhwrt / power by xlin。
 
-个人 UCI 配置（网络、防火墙、passwall2 节点等）不编译进固件，通过 `sysupgrade -k` 保留。
+## 参考致谢
 
-## 基于
-
-- [kiddin9/Kwrt](https://github.com/kiddin9/Kwrt) — OpenWrt 软路由固件
-- [openwrt/openwrt](https://github.com/openwrt/openwrt) — OpenWrt 25.12
-- GitHub Actions — 免费 CI/CD 编译
-
-## 许可
-
-继承上游 [Kwrt](https://github.com/kiddin9/Kwrt) 的许可协议。
+构建机制基于 [wukongdaily/ImmortalWrt-ImageBuilder](https://github.com/wukongdaily/ImmortalWrt-ImageBuilder)（MIT）。
