@@ -31,6 +31,13 @@ c=c.replace('\t\t./scripts/build/binary','\t\tTARGET=\$(PKG_BUILD_DIR)/build \\\
 open(f,'w').write(c)
 " 2>/dev/null || true
 
+# Fix dockerd vendored-version check (EnsureVendoredVersion): kiddin9 dockerd 27.3.1 vendors
+# containerd 1.7.22 + runc 1.1.14 + tini 0.19.0, but openwrt/packages feed moved containerd to
+# 2.2.5 and runc to 1.3.6, breaking the prepare step on cold builds (warm upstream caches mask it).
+# Pin containerd/runc Makefiles to the matching historical versions; tini 0.19.0 still matches.
+wget -N https://raw.githubusercontent.com/openwrt/packages/adce350700/utils/containerd/Makefile -P feeds/packages/utils/containerd/
+wget -N https://raw.githubusercontent.com/openwrt/packages/023f3046fb9b/utils/runc/Makefile -P feeds/packages/utils/runc/
+
 # Fix collectd build: LCC_VERSION_PATCH gets -rXX suffix from PKG_RELEASE (openwrt#17149)
 # Root cause: OpenWrt VERSION=5.12.0-r54 leaks into autoreconf, corrupting @LCC_VERSION_PATCH@
 # Fix: inject Build/Configure hook to patch GENERATED lcc_features.h after configure
