@@ -55,6 +55,7 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES bash htop coremark fdisk bsdtar mtools pciutil
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES bind-host block-mount automount"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES samba4-client"               # [验证]
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES grub2-bios-setup"           # [验证]
+# TODO 下轮加：grub2-efi grub2-editenv（EFI 引导现场修复工具，主人已拍板）
 
 # ---------- 内核模块（官方仓；NIC 驱动 = R2 Max 命根子）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-wireguard kmod-tun kmod-inet-diag"

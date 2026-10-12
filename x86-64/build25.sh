@@ -15,8 +15,9 @@ mkdir -p "$FILES_DIR/etc/config"
 if [ -z "$CUSTOM_PACKAGES" ]; then
   echo "⚪️ 包清单为空"
 else
-  echo "🔄 同步第三方 apk 仓库（wukongdaily/apk）..."
-  git clone --depth=1 https://github.com/wukongdaily/apk.git /tmp/store-apk-repo \
+  echo "🔄 同步第三方 apk 仓库（wukongdaily/apk，稀疏克隆仅取 run/x86）..."
+  git clone --depth=1 --filter=blob:none --sparse https://github.com/wukongdaily/apk.git /tmp/store-apk-repo \
+    && (cd /tmp/store-apk-repo && git sparse-checkout set run/x86) \
     || echo "⚠️ 第三方仓库 clone 失败，仅用官方 feed"
   mkdir -p /home/build/immortalwrt/extra-packages
   [ -d /tmp/store-apk-repo/run/x86 ] && cp -r /tmp/store-apk-repo/run/x86/* /home/build/immortalwrt/extra-packages/ 2>/dev/null

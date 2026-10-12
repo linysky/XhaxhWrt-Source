@@ -72,6 +72,8 @@ jobs:
 
       - name: Generate sha256
         run: |
+          # ImageBuilder 容器以 root 写出 bin/，先归权给 runner 用户
+          sudo chown -R $USER:$USER ${{ github.workspace }}/bin
           cd ${{ github.workspace }}/bin/targets/x86/64
           for f in *squashfs-combined-efi.img.gz; do
             sha256sum "$f" > "$f.sha256"
