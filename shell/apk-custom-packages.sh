@@ -17,12 +17,12 @@ CUSTOM_PACKAGES=""
 # 调度面板 + 核心引擎（SSR 已弃用不装；SS 保留给 passwall2 SS 节点）
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-passwall2 luci-i18n-passwall2-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES xray-core sing-box hysteria geoview"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES shadowsocks-libev-ss-local shadowsocks-libev-ss-redir"
+# shadowsocks-libev-ss-local/ss-redir 在 ImmortalWrt feed 不存在 → 已弃（SS 协议走 xray-core 出站）
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-nft-socket kmod-nft-tproxy"
 
 # ---------- Docker 全家（官方仓）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES docker dockerd containerd runc docker-compose"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-dockerman luci-i18n-dockerman-zh-cn luci-lib-docker"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-dockerman luci-i18n-dockerman-zh-cn"  # luci-lib-docker 在 ImmortalWrt 不存在（JS 版自带依赖）→ 已弃
 
 # ---------- LuCI 面板（官方仓）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-acme luci-i18n-acme-zh-cn"
@@ -30,7 +30,7 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ddns luci-i18n-ddns-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-nlbwmon luci-i18n-nlbwmon-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-nut luci-i18n-nut-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-statistics luci-i18n-statistics-zh-cn"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-tcpdump luci-i18n-tcpdump-zh-cn"
+# luci-app-tcpdump 在 ImmortalWrt feed 不存在 → 已弃（tcpdump CLI 仍在）
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-diskman luci-i18n-diskman-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-arpbind"            # [验证]
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-ssl luci-proto-wireguard"
@@ -48,13 +48,13 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES nut nut-driver-usbhid-ups nut-upsrw nut-upssch
 
 # ---------- 网络服务（官方仓）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES acme-acmesh acme-acmesh-dnsapi"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES miniupnpd-nftables socat speedtest-cli"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES miniupnpd-nftables socat"   # speedtest-cli 在 ImmortalWrt 不存在 → 已弃
 
 # ---------- 系统工具（官方仓）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES bash htop coremark fdisk bsdtar mtools pciutils usbutils tcpdump"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES bind-host block-mount automount"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES samba4-client"               # [验证]
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES grub2-efi-bios-setup"        # [验证]
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES grub2-bios-setup"           # [验证]
 
 # ---------- 内核模块（官方仓；NIC 驱动 = R2 Max 命根子）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-wireguard kmod-tun kmod-inet-diag"
