@@ -1,5 +1,9 @@
 # XhaxhWrt-Source @ immortal-25.12
 
+> ⚠️ **本分支已归档（2026-10-13）**：ImmortalWrt APK 线完成全部验证（终版 539 包、
+> 功能闭包清零）但 Kwrt 特供生态不可移植，主人定案升级采用 A 线 Kwrt v3 镜像。
+> 分支保留备查/重启用，不再主动迭代。
+
 Xhaxhwrt 自建固件线（B 线）——**ImmortalWrt 25.12 APK / ImageBuilder** 底座。
 
 与 `25.12` 分支（Kwrt 源码编译线，已封存）的区别：本分支用官方 ImmortalWrt
