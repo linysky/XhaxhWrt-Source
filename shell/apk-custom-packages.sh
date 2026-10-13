@@ -54,7 +54,7 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES miniupnpd-nftables socat haproxy ds-lite"
 
 # ---------- 系统工具（官方仓）----------
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES bash htop coremark fdisk bsdtar mtools pciutils usbutils tcpdump"
-CUSTOM_PACKAGES="$CUSTOM_PACKAGES bind-host block-mount automount nano iperf3 ip-tiny lm-sensors-detect"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES bind-host block-mount automount nano iperf3 lm-sensors-detect"  # ip-tiny 与 passwall2 的 ip-full 冲突，ip-full 为超集已随 passwall2 装入
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES openssh-sftp-server zram-swap fuse-overlayfs"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES samba4-client"               # [验证]
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES grub2-bios-setup grub2-efi grub2-editenv"  # [验证] EFI 修复工具已拍板
