@@ -29,6 +29,7 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-acme luci-i18n-acme-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-ddns luci-i18n-ddns-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-nlbwmon luci-i18n-nlbwmon-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-nut luci-i18n-nut-zh-cn"
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-upnp luci-i18n-upnp-zh-cn"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-statistics luci-i18n-statistics-zh-cn"
 # luci-app-tcpdump 在 ImmortalWrt feed 不存在 → 已弃（tcpdump CLI 仍在）
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-diskman luci-i18n-diskman-zh-cn"
@@ -65,6 +66,8 @@ CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-nft-nat kmod-nft-fullcone"  # fullcone [�
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-e1000e kmod-igb kmod-igc kmod-ixgbe kmod-ixgbevf"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-bnx2 kmod-amazon-ena kmod-amd-xgbe kmod-dwmac-intel kmod-forcedeth"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-phy-broadcom"
+# 通用 x86 兼容驱动（R2 Max 用不到但对齐现网基线）
+CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-atlantic kmod-bnx2x kmod-iavf kmod-mlx4-core kmod-mlx5-core kmod-mlxfw bnx2x-firmware"
 CUSTOM_PACKAGES="$CUSTOM_PACKAGES kmod-r8101 kmod-r8125 kmod-r8126"  # [验证]
 
 # ============================================================
